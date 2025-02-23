@@ -5,43 +5,71 @@
 </ion-header>
 
 <ion-content>
-  <div class="controls">
-    <ion-button expand="full" color="primary" (click)="switchMode('draw')">
-      <ion-icon slot="start" name="create-outline"></ion-icon>
-      Modo Desenho (Caneta)
-    </ion-button>
-    <ion-button expand="full" color="secondary" (click)="switchMode('select')">
-      <ion-icon slot="start" name="checkbox-outline"></ion-icon>
-      Modo Seleção
-    </ion-button>
-    <ion-button expand="full" color="tertiary" (click)="switchMode('zoom')">
-      <ion-icon slot="start" name="resize-outline"></ion-icon>
-      Modo Zoom
-    </ion-button>
-    <ion-button expand="full" color="danger" (click)="switchMode('erase')">
-      <ion-icon slot="start" name="trash-outline"></ion-icon>
-      Modo Apagar
-    </ion-button>
-    <ion-button expand="full" color="success" (click)="switchMode('text')">
-      <ion-icon slot="start" name="text-outline"></ion-icon>
-      Modo Texto
-    </ion-button>
-    <ion-button expand="full" color="warning" (click)="switchMode('circle')">
-      <ion-icon slot="start" name="ellipse-outline"></ion-icon>
-      Modo Círculo
-    </ion-button>
-    <ion-button expand="full" color="primary" (click)="switchMode('rectangle')">
-      <ion-icon slot="start" name="square-outline"></ion-icon>
-      Modo Retângulo
-    </ion-button>
-    <ion-button expand="full" color="secondary" (click)="switchMode('line')">
-      <ion-icon slot="start" name="remove-outline"></ion-icon>
-      Modo Linha
-    </ion-button>
-  </div>
+  <ion-row class="alinhar-linha">
+    <ion-col size="2" >
+      <ion-button expand="full" color="primary" (click)="switchMode('draw')">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="switchMode('select')">
+        <ion-icon name="checkbox-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="tertiary" (click)="switchMode('zoom')">
+        <ion-icon name="resize-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="success" (click)="switchMode('text')">
+        <ion-icon name="text-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="danger" (click)="switchMode('erase')">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+   
+  </ion-row>
+  <ion-row class="alinhar-linha">
+    <ion-col size="2">
+      <ion-button expand="full" color="warning" (click)="switchMode('circle')">
+        <ion-icon name="ellipse-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="primary" (click)="switchMode('rectangle')">
+        <ion-icon name="square-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="switchMode('line')">
+        <ion-icon name="remove-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="switchMode('line')">
+        <ion-icon name="remove-outline"></ion-icon>
+      </ion-button>
+    </ion-col> 
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="addNote()">
+        <ion-icon name="bookmark-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="triggerFileInput()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+      </ion-button>
+      <input #fileInput hidden type="file" (change)="handleImageUpload($event)" accept="image/*">
+    </ion-col>
+    
+  </ion-row>
 
   <!-- Canvas onde o Fabric.js desenha -->
   <div class="canvas-container">
-    <canvas id="c" width="400" height="400"></canvas>
+    <canvas id="c" width="600" height="600"></canvas>
   </div>
 </ion-content>
