@@ -1,20 +1,47 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Controle de Canvas</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="controls">
+    <ion-button expand="full" color="primary" (click)="switchMode('draw')">
+      <ion-icon slot="start" name="create-outline"></ion-icon>
+      Modo Desenho (Caneta)
+    </ion-button>
+    <ion-button expand="full" color="secondary" (click)="switchMode('select')">
+      <ion-icon slot="start" name="checkbox-outline"></ion-icon>
+      Modo Seleção
+    </ion-button>
+    <ion-button expand="full" color="tertiary" (click)="switchMode('zoom')">
+      <ion-icon slot="start" name="resize-outline"></ion-icon>
+      Modo Zoom
+    </ion-button>
+    <ion-button expand="full" color="danger" (click)="switchMode('erase')">
+      <ion-icon slot="start" name="trash-outline"></ion-icon>
+      Modo Apagar
+    </ion-button>
+    <ion-button expand="full" color="success" (click)="switchMode('text')">
+      <ion-icon slot="start" name="text-outline"></ion-icon>
+      Modo Texto
+    </ion-button>
+    <ion-button expand="full" color="warning" (click)="switchMode('circle')">
+      <ion-icon slot="start" name="ellipse-outline"></ion-icon>
+      Modo Círculo
+    </ion-button>
+    <ion-button expand="full" color="primary" (click)="switchMode('rectangle')">
+      <ion-icon slot="start" name="square-outline"></ion-icon>
+      Modo Retângulo
+    </ion-button>
+    <ion-button expand="full" color="secondary" (click)="switchMode('line')">
+      <ion-icon slot="start" name="remove-outline"></ion-icon>
+      Modo Linha
+    </ion-button>
+  </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Canvas onde o Fabric.js desenha -->
+  <div class="canvas-container">
+    <canvas id="c" width="400" height="400"></canvas>
   </div>
 </ion-content>
