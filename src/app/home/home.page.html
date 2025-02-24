@@ -50,13 +50,13 @@
       </ion-button>
     </ion-col>
     <ion-col size="2">
-      <ion-button expand="full" color="secondary" (click)="switchMode('line')">
-        <ion-icon name="remove-outline"></ion-icon>
-      </ion-button>
-    </ion-col> 
-    <ion-col size="2">
       <ion-button expand="full" color="secondary" (click)="addNote()">
         <ion-icon name="bookmark-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="2">
+      <ion-button expand="full" color="secondary" (click)="switchMode('download')">
+        <ion-icon name="cloud-download-outline"></ion-icon>
       </ion-button>
     </ion-col>
     <ion-col size="2">
@@ -70,6 +70,6 @@
 
   <!-- Canvas onde o Fabric.js desenha -->
   <div class="canvas-container">
-    <canvas id="c" width="600" height="600"></canvas>
+    <canvas id="c"></canvas>
   </div>
 </ion-content>

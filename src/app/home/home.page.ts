@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol } from '@ionic/angular/standalone';
 import { fabric } from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
-import * as fromFabric from 'fabric-with-gestures';
+//import * as fromFabric from 'fabric-with-gestures';
 import { addIcons } from 'ionicons';
 import { logoIonic, checkboxOutline, createOutline, resizeOutline, trashOutline, textOutline, ellipseOutline, squareOutline, removeOutline, cloudDownloadOutline, cloudUploadOutline, bookmarkOutline } from 'ionicons/icons';
 
@@ -15,7 +15,7 @@ import { logoIonic, checkboxOutline, createOutline, resizeOutline, trashOutline,
 export class HomePage {
   canvas: any;
   constructor() {
-    this.canvas = fromFabric.fabric.Canvas;
+    this.canvas = fabric.Canvas;
     addIcons({
       checkboxOutline, resizeOutline, createOutline, trashOutline,
       textOutline, ellipseOutline, squareOutline, removeOutline, cloudDownloadOutline, cloudUploadOutline, bookmarkOutline
@@ -33,20 +33,24 @@ export class HomePage {
   lastX: any;
   lastY: any;
 
-  currentMode: string = 'draw'; // Modo inicial (desenho)
+  currentMode: string = 'draw'; // Initial mode (drawing)
 
   ngOnInit() {
-    this.canvas = new fromFabric.fabric.Canvas('c', {
+    this.canvas = new fabric.Canvas('c', {
       backgroundColor: '#fff',
-      selection: false, // Desativa a seleção por padrão
+      selection: false, // Disables selection by default
     });
-    this.canvas.setHeight(600);
-    this.canvas.setWidth(600);
+
+    const vh = window.innerHeight * 0.55; // Example: 55vh
+    const vw = window.innerWidth * 0.9; // Example: 90vw
+
+    this.canvas.setHeight(vh);
+    this.canvas.setWidth(vw);
     this.activateDrawingMode();
 
-    // Alterando a cor e a largura da borda da seleção
-    this.canvas.selectionBorderColor = 'blue';  // Cor da borda de seleção
-    this.canvas.selectionLineWidth = 4;       // Largura da borda de seleção
+    // Changing the color and width of the selection border
+    this.canvas.selectionBorderColor = 'blue';  // Selection border color
+    this.canvas.selectionLineWidth = 4;       // Selection border width
 
   }
 
@@ -57,54 +61,54 @@ export class HomePage {
   }
 
   addNote() {
-    // 1. Criação do Retângulo (Fundo da Nota)
+    // 1. Creating the Rectangle (Note Background)
     const noteBackground = new fabric.Rect({
       left: 100,
       top: 100,
       width: 200,
       height: 150,
-      fill: '#fdfd96',  // Cor amarela para simular uma nota de papel
-      rx: 10,  // Bordas arredondadas
-      ry: 10,  // Bordas arredondadas
+      fill: '#fdfd96',  // Yellow color to simulate a paper note
+      rx: 10,  // Rounded corners
+      ry: 10,  // Rounded corners
     });
 
-    // 2. Criação do Texto (Conteúdo da Nota)
-    const noteText = new fabric.Textbox('Minha Nota', {
+    // 2. Creating the Text (Note Content)
+    const noteText = new fabric.Textbox('My Note', {
       left: 120,
       top: 120,
       fontSize: 20,
-      width: 160,  // Largura para o texto automaticamente quebrar a linha
-      fill: '#000',  // Cor do texto
+      width: 160,  // Width for automatic line breaks
+      fill: '#000',  // Text color
     });
 
-    // 3. Adicionando os Objetos no Canvas
+    // 3. Adding Objects to the Canvas
     this.canvas.add(noteBackground);
     this.canvas.add(noteText);
   }
 
-  // Função para ativar o modo de desenho (caneta)
+  // Function to activate drawing mode (pen)
   activateDrawingMode() {
     this.canvas.isDrawingMode = true;
-    this.canvas.freeDrawingBrush.color = 'black'; // Cor da caneta
-    this.canvas.freeDrawingBrush.width = 5; // Espessura da caneta
+    this.canvas.freeDrawingBrush.color = 'black'; // Pen color
+    this.canvas.freeDrawingBrush.width = 5; // Pen thickness
     this.currentMode = 'draw';
-    this.canvas.selection = false; // Desativa a seleção de objetos
+    this.canvas.selection = false; // Disables object selection
   }
 
-  // Função para ativar o modo de seleção
+  // Function to activate selection mode
   activateSelectionMode() {
-    this.canvas.isDrawingMode = false; // Desativa o desenho
-    this.canvas.selection = true; // Ativa a seleção de objetos
+    this.canvas.isDrawingMode = false; // Disables drawing
+    this.canvas.selection = true; // Enables object selection
     this.currentMode = 'select';
   }
 
-  // Função para ativar o modo de zoom
+  // Function to activate zoom mode
   activateZoomMode() {
     this.canvas.isDrawingMode = false;
     this.canvas.selection = false;
     this.currentMode = 'zoom';
 
-    // Desenhando uma área de zoom (com controle de mouse wheel)
+    // Drawing a zoom area (with mouse wheel control)
     this.canvas.on('mouse:wheel', (opt: any) => {
       const delta = opt.e.deltaY;
       let zoom = this.canvas.getZoom();
@@ -117,28 +121,28 @@ export class HomePage {
     });
   }
 
-  // Método para desativar o zoom (limpar eventos)
+  // Method to deactivate zoom mode (clear events)
   deactivateZoomMode() {
-    this.canvas.off('mouse:wheel'); // Remove o evento de zoom
+    this.canvas.off('mouse:wheel'); // Removes the zoom event
   }
   activateTextMode() {
     this.canvas.isDrawingMode = false;
     this.canvas.selection = true;
     this.currentMode = 'text';
 
-    const text = new fromFabric.fabric.Textbox('Digite aqui', {
+    const text = new fabric.Textbox('Type here', {
       left: 100,
       top: 100,
       fontSize: 30,
-      fill: '#000000', // Cor do texto
-      editable: true, // Permitir edição
-      width: 200, // Largura do campo de texto
+      fill: '#000000', // Text color
+      editable: true, // Allows editing
+      width: 200, // Text field width
     });
 
     this.canvas.add(text);
     this.canvas.setActiveObject(text);
-    text.enterEditing(); // Habilita a edição do texto automaticamente
-    text.hiddenTextarea?.focus(); // Garante que o cursor apareça imediatamente
+    text.enterEditing(); // Enables text editing automatically
+    text.hiddenTextarea?.focus(); // Ensures the cursor appears immediately
   }
 
 
@@ -147,7 +151,7 @@ export class HomePage {
     this.canvas.selection = true;
     this.currentMode = 'image';
 
-    fromFabric.fabric.Image.fromURL(imageUrl, (img) => {
+    fabric.Image.fromURL(imageUrl, (img) => {
       img.set({
         left: 100,
         top: 100,
@@ -164,7 +168,7 @@ export class HomePage {
     this.canvas.selection = true;
     this.currentMode = 'circle';
 
-    const circle = new fromFabric.fabric.Circle({
+    const circle = new fabric.Circle({
       radius: 50,
       left: 100,
       top: 100,
@@ -181,7 +185,7 @@ export class HomePage {
     this.canvas.selection = true;
     this.currentMode = 'rectangle';
 
-    const rectangle = new fromFabric.fabric.Rect({
+    const rectangle = new fabric.Rect({
       left: 150,
       top: 150,
       width: 100,
@@ -200,7 +204,7 @@ export class HomePage {
     this.canvas.selection = true;
     this.currentMode = 'line';
 
-    const line = new fromFabric.fabric.Line([100, 100, 200, 200], {
+    const line = new fabric.Line([100, 100, 200, 200], {
       left: 50,
       top: 50,
       stroke: 'red',
@@ -213,27 +217,27 @@ export class HomePage {
   }
   activateEraseMode() {
     this.canvas.isDrawingMode = false;
-    this.canvas.selection = false; // Desativa a seleção
+    this.canvas.selection = false; // Disables selection
     this.currentMode = 'erase';
 
-    // Definindo um pincel de apagar
-    const eraseBrush = new fromFabric.fabric.PencilBrush(this.canvas);
-    eraseBrush.color = '#ffffff'; // Cor branca para apagar
-    eraseBrush.width = 20; // Tamanho do apagador
+    // Setting up an eraser brush
+    const eraseBrush = new fabric.PencilBrush(this.canvas);
+    eraseBrush.color = '#ffffff'; // White color to erase
+    eraseBrush.width = 20; // Eraser size
     this.canvas.freeDrawingBrush = eraseBrush;
-    this.canvas.isDrawingMode = true; // Ativa o modo de desenho
+    this.canvas.isDrawingMode = true; // Activates drawing mode
   }
 
 
   downloadCanvas() {
     const dataURL = this.canvas.toDataURL({
-      format: 'png', // Pode ser 'jpeg' ou 'webp' se preferir
-      quality: 1.0   // Qualidade máxima
+      format: 'png', // Can be 'jpeg' or 'webp' if preferred
+      quality: 1.0   // Maximum quality
     });
 
     const link = document.createElement('a');
     link.href = dataURL;
-    link.download = 'minha_arte.png'; // Nome do arquivo ao baixar
+    link.download = 'my_art.png'; // File name when downloading
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -253,9 +257,6 @@ export class HomePage {
       case 'text':
         this.activateTextMode();
         break;
-      case 'image':
-        this.activateImageMode('https://i.pinimg.com/originals/ed/55/22/ed55223749f1d995b2bb0cbb24692c1d.jpg'); // Exemplo de URL de imagem
-        break;
       case 'circle':
         this.activateCircleMode();
         break;
@@ -272,7 +273,7 @@ export class HomePage {
         this.downloadCanvas();
         break;
       default:
-        console.log('Modo não reconhecido');
+        console.log('Unrecognized mode');
     }
   }
 
@@ -283,9 +284,9 @@ export class HomePage {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       fabric.Image.fromURL(e.target.result, (img) => {
-        img.scaleToWidth(300); // Ajusta o tamanho da imagem (opcional)
+        img.scaleToWidth(300); // Adjusts the image size (optional)
         img.scaleToHeight(300);
-        img.set({ left: 50, top: 50 }); // Define a posição inicial
+        img.set({ left: 50, top: 50 }); // Sets the initial position
 
         this.canvas.add(img);
         this.canvas.renderAll();
