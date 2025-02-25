@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol
+  , IonButtons, IonMenuButton
+ } from '@ionic/angular/standalone';
 import { fabric } from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
 //import * as fromFabric from 'fabric-with-gestures';
@@ -10,7 +12,9 @@ import { logoIonic, checkboxOutline, createOutline, resizeOutline, trashOutline,
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol],
+  imports: [IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonButton, IonIcon, 
+    IonRow, IonCol, IonButtons, IonMenuButton],
 })
 export class HomePage {
   canvas: any;
