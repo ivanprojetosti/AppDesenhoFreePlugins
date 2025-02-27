@@ -1,31 +1,26 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol
-  , IonButtons, IonMenuButton
- } from '@ionic/angular/standalone';
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonRow, IonCol
+  , IonButtons, IonMenuButton, IonMenuToggle, IonText, IonFabButton, IonFabList, IonFab
+} from '@ionic/angular/standalone';
 import { fabric } from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
 //import * as fromFabric from 'fabric-with-gestures';
 import { addIcons } from 'ionicons';
 import { logoIonic, checkboxOutline, createOutline, resizeOutline, trashOutline, textOutline, ellipseOutline, squareOutline, removeOutline, cloudDownloadOutline, cloudUploadOutline, bookmarkOutline } from 'ionicons/icons';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonButton, IonIcon, 
-    IonRow, IonCol, IonButtons, IonMenuButton],
+  imports: [IonHeader, IonToolbar, IonTitle,
+    IonContent, IonButton, IonIcon,
+    IonRow, IonCol, IonButtons, IonMenuButton, IonMenuToggle, IonText, IonFabButton, IonFabList, IonFab],
 })
 export class HomePage {
   canvas: any;
-  constructor() {
-    this.canvas = fabric.Canvas;
-    addIcons({
-      checkboxOutline, resizeOutline, createOutline, trashOutline,
-      textOutline, ellipseOutline, squareOutline, removeOutline, cloudDownloadOutline, cloudUploadOutline, bookmarkOutline
-    });
-  }
-
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   output: string[] = [];
 
   pausePanning = false;
@@ -36,8 +31,23 @@ export class HomePage {
   yChange: any;
   lastX: any;
   lastY: any;
-
   currentMode: string = 'draw'; // Initial mode (drawing)
+  colorSelected: string = "black";
+
+  constructor(private _menuCtrl: MenuController) {
+    this.canvas = fabric.Canvas;
+    addIcons({
+      checkboxOutline, resizeOutline, createOutline, trashOutline,
+      textOutline, ellipseOutline, squareOutline, removeOutline, cloudDownloadOutline, cloudUploadOutline, bookmarkOutline
+    });
+  }
+
+  changeBrushColor(color: string) {
+    this.colorSelected = color;
+    if (this.currentMode === 'draw') {
+      this.activateDrawingMode();
+    }
+  }
 
   ngOnInit() {
     this.canvas = new fabric.Canvas('c', {
@@ -55,10 +65,10 @@ export class HomePage {
     // Changing the color and width of the selection border
     this.canvas.selectionBorderColor = 'blue';  // Selection border color
     this.canvas.selectionLineWidth = 4;       // Selection border width
+    this._menuCtrl.enable(true, 'main-menu');
+    this._menuCtrl.open('main-menu');
 
   }
-
-  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
   triggerFileInput() {
     this.fileInput.nativeElement.click();
@@ -71,7 +81,7 @@ export class HomePage {
       top: 100,
       width: 200,
       height: 150,
-      fill: '#fdfd96',  // Yellow color to simulate a paper note
+      fill: this.colorSelected,  // Yellow color to simulate a paper note
       rx: 10,  // Rounded corners
       ry: 10,  // Rounded corners
     });
@@ -82,7 +92,7 @@ export class HomePage {
       top: 120,
       fontSize: 20,
       width: 160,  // Width for automatic line breaks
-      fill: '#000',  // Text color
+      fill: this.colorSelected,  // Text color
     });
 
     // 3. Adding Objects to the Canvas
@@ -93,7 +103,7 @@ export class HomePage {
   // Function to activate drawing mode (pen)
   activateDrawingMode() {
     this.canvas.isDrawingMode = true;
-    this.canvas.freeDrawingBrush.color = 'black'; // Pen color
+    this.canvas.freeDrawingBrush.color = this.colorSelected; // Pen color
     this.canvas.freeDrawingBrush.width = 5; // Pen thickness
     this.currentMode = 'draw';
     this.canvas.selection = false; // Disables object selection
@@ -108,27 +118,42 @@ export class HomePage {
 
   // Function to activate zoom mode
   activateZoomMode() {
+    this.deactivateZoomMode(); // Remove eventos antigos para evitar bugs
     this.canvas.isDrawingMode = false;
     this.canvas.selection = false;
     this.currentMode = 'zoom';
 
-    // Drawing a zoom area (with mouse wheel control)
+    console.log('Zoom mode enabled'); // Teste no console para garantir ativação
+
+    // Verifica se o evento está sendo adicionado corretamente
     this.canvas.on('mouse:wheel', (opt: any) => {
-      const delta = opt.e.deltaY;
-      let zoom = this.canvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
-      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
+
+      let zoom = this.canvas.getZoom();
+      const zoomFactor = 0.1; // Ajuste do zoom
+
+      if (opt.e.deltaY < 0) {
+        zoom += zoomFactor; // Zoom in
+      } else {
+        zoom -= zoomFactor; // Zoom out
+      }
+
+      zoom = Math.max(0.5, Math.min(zoom, 3)); // Mantém entre 0.5x e 3x
+
+      console.log('Zoom level:', zoom); // Debug
+
+      this.canvas.zoomToPoint(new fabric.Point(opt.e.offsetX, opt.e.offsetY), zoom);
+      this.canvas.renderAll();
     });
   }
 
-  // Method to deactivate zoom mode (clear events)
+
+  // Método para remover o evento ao sair do modo zoom
   deactivateZoomMode() {
-    this.canvas.off('mouse:wheel'); // Removes the zoom event
+    this.canvas.off('mouse:wheel');
   }
+
   activateTextMode() {
     this.canvas.isDrawingMode = false;
     this.canvas.selection = true;
@@ -138,7 +163,7 @@ export class HomePage {
       left: 100,
       top: 100,
       fontSize: 30,
-      fill: '#000000', // Text color
+      fill: this.colorSelected, // Text color
       editable: true, // Allows editing
       width: 200, // Text field width
     });
@@ -176,7 +201,7 @@ export class HomePage {
       radius: 50,
       left: 100,
       top: 100,
-      fill: 'blue',
+      fill: this.colorSelected,
       selectable: true,
     });
 
@@ -194,14 +219,13 @@ export class HomePage {
       top: 150,
       width: 100,
       height: 50,
-      fill: 'green',
+      fill: this.colorSelected,
       selectable: true,
     });
 
     this.canvas.add(rectangle);
     this.canvas.setActiveObject(rectangle);
   }
-
 
   activateLineMode() {
     this.canvas.isDrawingMode = false;
@@ -211,7 +235,7 @@ export class HomePage {
     const line = new fabric.Line([100, 100, 200, 200], {
       left: 50,
       top: 50,
-      stroke: 'red',
+      stroke: this.colorSelected,
       strokeWidth: 3,
       selectable: true,
     });
@@ -219,6 +243,7 @@ export class HomePage {
     this.canvas.add(line);
     this.canvas.setActiveObject(line);
   }
+
   activateEraseMode() {
     this.canvas.isDrawingMode = false;
     this.canvas.selection = false; // Disables selection
@@ -298,6 +323,5 @@ export class HomePage {
     };
     reader.readAsDataURL(file);
   }
-
 
 }

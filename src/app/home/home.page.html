@@ -1,13 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button auto-hide="false"></ion-menu-button>
     </ion-buttons>
     <ion-title>Desenho</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content>  
   <ion-row class="alinhar-linha">
     <ion-col size="2" >
       <ion-button expand="full" color="primary" (click)="switchMode('draw')">
@@ -19,11 +19,11 @@
         <ion-icon name="checkbox-outline"></ion-icon>
       </ion-button>
     </ion-col> 
-    <ion-col size="2">
+    <!-- <ion-col size="2">
       <ion-button expand="full" color="tertiary" (click)="switchMode('zoom')">
         <ion-icon name="resize-outline"></ion-icon>
       </ion-button>
-    </ion-col> 
+    </ion-col>  -->
     <ion-col size="2">
       <ion-button expand="full" color="success" (click)="switchMode('text')">
         <ion-icon name="text-outline"></ion-icon>
@@ -70,7 +70,28 @@
     </ion-col>
     
   </ion-row>
-
+  <ion-row class="alinhar-linha">
+    <ion-col size="1">
+      <ion-button size="small" expand="full" color="warning" (click)="changeBrushColor('yellow')">
+      </ion-button>
+    </ion-col> 
+    <ion-col size="1">
+      <ion-button size="small" expand="full" color="success" (click)="changeBrushColor('green')">
+      </ion-button>
+    </ion-col> 
+    <ion-col size="1">
+      <ion-button size="small" expand="full" color="secondary" (click)="changeBrushColor('blue')">
+      </ion-button>
+    </ion-col>
+    <ion-col size="1">
+      <ion-button size="small" expand="full" color="danger" (click)="changeBrushColor('red')">
+      </ion-button>
+    </ion-col>
+    <ion-col size="1">
+      <ion-button size="small" expand="full" color="dark" (click)="changeBrushColor('black')">
+      </ion-button>
+    </ion-col>    
+  </ion-row>
   <!-- Canvas onde o Fabric.js desenha -->
   <div class="canvas-container">
     <canvas id="c"></canvas>
